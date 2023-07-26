@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:panel_langues/components/row_utilisateur.dart';
+import 'package:panel_langues/controllers/user_controller.dart';
+import 'package:panel_langues/models/app_user.dart';
+import 'package:panel_langues/providers/user_provider.dart';
+import 'package:panel_langues/views/components/row_utilisateur.dart';
 
 class Utilisateurs extends StatefulWidget {
   const Utilisateurs({super.key});
@@ -10,7 +13,7 @@ class Utilisateurs extends StatefulWidget {
 
 class _UtilisateursState extends State<Utilisateurs> {
   //fonction du modale
-  Future<void> showModal() async {
+  Future<void> showModal(UserApp appuser) async {
     return showDialog(
         context: context,
         barrierDismissible: false,
@@ -34,12 +37,12 @@ class _UtilisateursState extends State<Utilisateurs> {
                       const SizedBox(
                         width: 20,
                       ),
-                      const Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'nom',
+                            appuser.userName,
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.w400),
                           ),
@@ -47,7 +50,7 @@ class _UtilisateursState extends State<Utilisateurs> {
                             height: 15,
                           ),
                           Text(
-                            'Ivankouamou21@gmail.com',
+                            appuser.userEmail,
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.w400),
                           ),
@@ -55,7 +58,7 @@ class _UtilisateursState extends State<Utilisateurs> {
                             height: 15,
                           ),
                           Text(
-                            'Numéro: ' + ' +237 693807284',
+                            'Numéro: ${appuser.phone}',
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.w400),
                           ),
@@ -63,7 +66,7 @@ class _UtilisateursState extends State<Utilisateurs> {
                             height: 15,
                           ),
                           Text(
-                            'Ville:' + ' Douala',
+                            'Ville: ${appuser.ville}',
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.w400),
                           ),
@@ -85,11 +88,33 @@ class _UtilisateursState extends State<Utilisateurs> {
                   },
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                    child: Text('Ajouter'),
+                    child: Text('Fermer'),
                   )),
             ],
           );
         });
+  }
+
+  List<UserApp>? allUser;
+  bool loading = true;
+  String? error;
+
+  initUserApp() async {
+    await UserController().getAllUser(context).then((value) {
+      loading = false;
+      if (value == null) {
+        error = "Impossible de récupérer les utilisateurs";
+      } else {
+        allUser = value;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void initState() {
+    initUserApp();
+    super.initState();
   }
 
   @override
@@ -101,9 +126,10 @@ class _UtilisateursState extends State<Utilisateurs> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'BIENVENU, I V A N',
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              Text(
+                'Bonjour ${UserProvider.user.currenUser!.userName}',
+                style:
+                    const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
               ),
               Container(
                   padding: const EdgeInsets.all(10),
@@ -121,23 +147,34 @@ class _UtilisateursState extends State<Utilisateurs> {
           ),
           const Divider(),
           Expanded(
-            child: ListView.builder(
-                itemCount: 50,
-                itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        showModal();
-                      },
-                      child: rowUtilisateur(
-                          'nom', 'email', 'numero', 'assets/back.png', () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                backgroundColor: Colors.red,
-                                content: Text(
-                                    'Impossible d effectuer la suppression ')));
-                      }),
-                    ))),
+            child: loading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : error != null
+                    ? Center(
+                        child: Text(
+                          error!,
+                          style: TextStyle(fontSize: 20, color: Colors.red),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: allUser!.length,
+                        itemBuilder: (context, index) => Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                showModal(allUser![index]);
+                              },
+                              child: rowUtilisateur(
+                                  allUser![index], 'assets/back.png', () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        backgroundColor: Colors.red,
+                                        content: Text(
+                                            'Impossible d effectuer la suppression ')));
+                              }),
+                            ))),
           ),
         ]),
       ),

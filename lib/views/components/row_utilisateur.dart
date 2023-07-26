@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:panel_langues/models/app_user.dart';
 
-Widget rowUtilisateur(
-    String nom, String email, String numero, String image, void fn()) {
+Widget rowUtilisateur(UserApp appuser, String image, void fn()) {
   return Container(
     padding: const EdgeInsets.all(5),
     decoration: BoxDecoration(
@@ -15,16 +15,16 @@ Widget rowUtilisateur(
           backgroundImage: AssetImage(image),
         ),
         Text(
-          nom,
+          appuser.userName,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
           overflow: TextOverflow.ellipsis,
         ),
         Text(
-          email,
+          appuser.userEmail,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
         ),
         Text(
-          numero,
+          appuser.phone,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
         ),
         ElevatedButton(
@@ -43,8 +43,7 @@ Widget rowUtilisateur(
   );
 }
 
-Widget rowInstructeur(
-    String nom, String email, String numero, String image, void fn()) {
+Widget rowInstructeur(UserApp app, String image, void fn()) {
   return Container(
     padding: const EdgeInsets.all(5),
     decoration: BoxDecoration(
@@ -58,16 +57,16 @@ Widget rowInstructeur(
           backgroundImage: AssetImage(image),
         ),
         Text(
-          nom,
+          app.userName,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
           overflow: TextOverflow.ellipsis,
         ),
         Text(
-          email,
+          app.userEmail,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
         ),
         Text(
-          numero,
+          app.phone,
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
         ),
         Row(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:panel_langues/screen/apropos.dart';
-import 'package:panel_langues/screen/instituteurs.dart';
-import 'package:panel_langues/screen/langues.dart';
-import 'package:panel_langues/screen/paiements.dart';
-import 'package:panel_langues/screen/utilisateurs.dart';
+import 'package:panel_langues/views/screen/apropos.dart';
+import 'package:panel_langues/views/screen/instituteurs.dart';
+import 'package:panel_langues/views/screen/langues_page.dart';
+import 'package:panel_langues/views/screen/paiements.dart';
+import 'package:panel_langues/views/screen/utilisateurs_page.dart';
+
 import 'package:sidebarx/sidebarx.dart';
 
 class Application extends StatefulWidget {
